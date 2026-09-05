@@ -1,4 +1,4 @@
-# AI-Powered Supply Chain Demand Forecasting System
+Supply Chain Demand Forecasting System
 
 A production-ready machine learning system for SKU/store-level demand forecasting with probabilistic predictions, explainability, and MLOps capabilities.
 
