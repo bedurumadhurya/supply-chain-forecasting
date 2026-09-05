@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  forecasting-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: supply-chain-forecasting-api
+    ports:
+      - "8000:8000"
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - LOG_LEVEL=INFO
+    volumes:
+      # Mount models directory for model updates
+      - ./models:/app/models
+      # Mount logs directory
+      - ./monitoring/logs:/app/monitoring/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: forecasting-network

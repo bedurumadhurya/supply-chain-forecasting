@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints
+notebooks/
+
+# Data files (large datasets)
+data/raw/*.csv
+data/raw/*.zip
+data/processed/*.parquet
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Environment
+.env
+.env.local
+
+# Documentation
+README.md
+PROJECT_STATUS.md
+docs/
+
+# Tests
+tests/
+.pytest_cache/
+
+# Reports
+reports/
+
+# Scripts
+scripts/
+
+# Unnecessary for container
+.dockerignore
+docker-compose.yml
+Dockerfile

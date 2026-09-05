@@ -1,0 +1,142 @@
+# Supply Chain Demand Forecasting Configuration
+
+# Data Configuration
+data:
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  external_data_path: "data/external"
+  
+  # M5 Dataset files
+  m5_files:
+    sales: "sales_train_evaluation.csv"
+    calendar: "calendar.csv"
+    prices: "sell_prices.csv"
+  
+  # Train/Validation/Test split dates
+  train_end_date: "2016-03-27"  # Last day of training
+  validation_end_date: "2016-04-24"  # Last day of validation (28 days)
+  test_end_date: "2016-05-22"  # Last day of test (28 days)
+
+# Feature Engineering Configuration
+features:
+  # Date features
+  date_features:
+    - "day"
+    - "day_of_week"
+    - "week_of_year"
+    - "month"
+    - "quarter"
+    - "year"
+    - "is_weekend"
+  
+  # Lag features (in days)
+  lag_periods: [1, 7, 14, 28]
+  
+  # Rolling window features (in days)
+  rolling_windows:
+    - window: 7
+      functions: ["mean", "std"]
+    - window: 14
+      functions: ["mean", "std"]
+    - window: 28
+      functions: ["mean", "std", "min", "max"]
+
+# Model Configuration
+models:
+  # Forecast horizon (days)
+  forecast_horizon: 7
+  
+  # XGBoost
+  xgboost:
+    n_estimators: 100
+    max_depth: 10
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    random_state: 42
+  
+  # LSTM
+  lstm:
+    hidden_size: 128
+    num_layers: 2
+    dropout: 0.2
+    learning_rate: 0.001
+    batch_size: 64
+    epochs: 50
+    patience: 10
+    lookback_window: 28
+  
+  # TFT (Temporal Fusion Transformer)
+  tft:
+    hidden_size: 64
+    lstm_layers: 2
+    attention_head_size: 4
+    dropout: 0.1
+    learning_rate: 0.001
+    batch_size: 128
+    max_epochs: 50
+    patience: 10
+    max_encoder_length: 28
+    max_prediction_length: 7
+    # Quantiles for probabilistic forecasting
+    quantiles: [0.1, 0.5, 0.9]
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - "mae"
+    - "rmse"
+    - "wmape"
+  baseline_model: "seasonal_naive"  # Model to compare improvements against
+
+# Monitoring Configuration
+monitoring:
+  # Performance thresholds
+  performance_threshold: 0.20  # 20% degradation triggers alert
+  
+  # Data drift thresholds
+  drift_threshold: 0.15  # 15% drift triggers alert
+  
+  # Monitoring frequency
+  check_interval_days: 7
+
+# MLOps Configuration
+mlops:
+  # Model versioning
+  model_registry_path: "models"
+  
+  # Retraining triggers
+  retrain_on_drift: true
+  retrain_on_performance_drop: true
+  retrain_interval_days: 30
+  
+  # Model promotion criteria
+  min_improvement_threshold: 0.02  # 2% minimum improvement to promote
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: false
+  title: "Supply Chain Demand Forecasting API"
+  version: "1.0.0"
+  description: "AI-powered demand forecasting for SKU/store-level predictions"
+
+# AWS Configuration
+aws:
+  region: "us-east-1"
+  s3_bucket: "supply-chain-forecasting-bucket"
+  
+  # S3 paths
+  s3_paths:
+    raw_data: "data/raw/"
+    processed_data: "data/processed/"
+    models: "models/"
+    forecasts: "forecasts/"
+    monitoring: "monitoring/"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_file: "monitoring/logs/forecasting.log"
